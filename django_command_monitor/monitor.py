@@ -178,7 +178,7 @@ class MonitoredCommand(BaseCommand):
             new_results = [progress_doc]
         else:
             new_results = results[::]
-            if new_results[-1].get('status', '') == 'RUNNING':
+            if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
                 new_results[-1]['status'] = 'SYSTEM_KILL'
                 new_results[-1]['finished'] = self.get_utc_time
             new_results.append(progress_doc)
