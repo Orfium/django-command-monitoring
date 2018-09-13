@@ -24,7 +24,8 @@ class MonitoredCommand(BaseCommand):
         self.finished = None
         self.alive = True
 
-        self.command_index = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%SZ")
+        # Settings
+        self.ping_interval = 10.0  # secs
 
     @property
     def get_utc_time(self):
@@ -105,7 +106,7 @@ class MonitoredCommand(BaseCommand):
         t1.start()
 
         while t1.isAlive():
-            t1.join(10.0)
+            t1.join(self.ping_interval)
             if not results[-1][1]:
                 progress_doc['status'] = 'RUNNING'
                 progress_doc['latest'] = self.get_utc_time

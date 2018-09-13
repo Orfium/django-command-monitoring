@@ -14,7 +14,6 @@ Currently supports:
 
 #### Package installation
 Use 
- - `pip install django-command-monitoring` or 
  - `pip install git+https://github.com/siakon89/django-command-monitoring.git`
 
 #### Set up environment
@@ -49,6 +48,6 @@ class Command(monitor.MonitoredCommand):
 ```
 
 ## TODO
+- [X] Handle the timeouts on FireBase, with at least 3 times retry
 - [ ] Create tests
-- [ ] Handle the timeouts on FireBase, with at least 3 times retry
 - [ ] Add support for other command classes other than `BaseCommand`
