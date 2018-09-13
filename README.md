@@ -15,7 +15,7 @@ Currently supports:
 #### Package installation
 Use 
  - `pip install django-command-monitoring` or 
- - `pip install git+https://ksiaterlis@bitbucket.org/ksiaterlis/django_command_monitoring.git`
+ - `pip install git+https://github.com/siakon89/django-command-monitoring.git`
 
 #### Set up environment
 In your django settings file you have to include your FireBase credentials and the FireBase folder that identifies your 
