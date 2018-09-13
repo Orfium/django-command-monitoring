@@ -45,7 +45,67 @@ from django_command_monitor import monitor
 
 class Command(monitor.MonitoredCommand):
 ...
+
 ```
+
+## After installation
+Your data in FireBase will look like this:
+
+```json
+{"monitor-myapp-production":{
+           "commands":{
+                "<the name of your command with arguments>":{
+                        "log":[{
+                                      "finished": "<DATETIME>",
+                                      "id": "<COMMAND ID>",
+                                      "latest": "<DATETIME>",
+                                      "message": "<MESSAGE>",
+                                      "name": "<COMMAND NAME>",
+                                      "params": "<PARAMETERS>",
+                                      "started": "<DATETIME>",
+                                      "status": "<STATUS>",
+                                      "exception_type": "<EXCEPTION AS STRING>"
+                                },
+                                {...},
+                                {...}, ...   
+                        ]
+                },
+                "<another command>":{...}
+           },
+  },
+}
+```
+
+First of all the name of the FireBase table is the same as the one in settings `FIREBASE_TABLE`.
+Under the key `commands` all the commands that have ran under the `monitor.MonitoredCommand` are listed there.
+
+Each command is identified by its name along side with its parameters i.e. when running 
+`python manage.py test_command --verbosity=2` the command name is transformed to `test_command__verbosity_2`.
+
+Under each command there is the key `log` that contains a list of all runs of this command with the respective details
+
+For each log it keeps the following data:
+- `id`: the identifier of the command(for now is the same as the key of the command mentioned above)
+- `name` : The name of the command i.e. when running `python manage.py test_command --verbossity=2` the name is `test_command`
+- `status`: the status of the command
+    - `STARTED` : The command has just started
+    - `RUNNING` : The command currently running
+    - `FINISHED` : The command has naturally finished
+    - `FAILED` : There was an error when running the command. `message` holds the error message and `exception_type`
+    holds the type of the exception
+    - `SYSTEM_KILL`: The command is killed by the system i.e. Heroku restarts the dyno based on the given interval. This 
+    status is assigned when the same command starts a new cycle and the previous log has status `RUNNING`, meaning the 
+    command is forced to stop before writing to FireBase
+- `started` : The datetime of when the process started
+- `finished`: The datetime of when the process finished. If the process is not yet finished the value is None
+- `latest`: The datetime of the latest ping. The process is running under a thread where it pings to FireBase under a 
+time interval
+- `message`: The message of the failed command
+- `exception_type` : The type of the exception when the command failed
+- `params`: The parameters of the command i.e. `python manage.py test_command --verbosity=2` goes to `verbosity=2`. 
+Multiple parameters are comma separated
+
+Finally the `<DATETIME>` format is as follows: YYYY-MM-DDTHH:MM:SS.(float)Z
 
 ## TODO
 - [X] Handle the timeouts on FireBase, with at least 3 times retry

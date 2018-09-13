@@ -91,7 +91,7 @@ class MonitoredCommand(BaseCommand):
             'latest': self.started,
             'finished': self.finished,
             'message': 'Command started',
-            'exeption_type': None,
+            'exception_type': None,
             'params': ', '.join([x.replace('-', '').replace('=', '_') for x in self.arguments_passed])
         }
 
