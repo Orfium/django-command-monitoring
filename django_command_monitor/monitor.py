@@ -129,9 +129,9 @@ class MonitoredCommand(BaseCommand):
         :param method: string, one of post, patch, delete, etc
         """
         # auth = firebase.FirebaseAuthentication(settings.FIREBASE['API_KEY'], 'kostas@orfium.com')
-        app = firebase.FirebaseApplication(settings.FIREBASE['NAME'])
+        app = firebase.FirebaseApplication(settings.FIREBASE_MONITORING['NAME'])
 
-        results = app.get('%s/commands/%s/log' % (settings.FIREBASE_MONITORING, str(self.command_id)), None)
+        results = app.get('%s/commands/%s/log' % (settings.FIREBASE_TABLE, str(self.command_id)), None)
 
         if method == 'get':
             return results
@@ -142,12 +142,12 @@ class MonitoredCommand(BaseCommand):
             else:
                 new_progress = [progress_doc]
 
-            app.patch('%s/commands/%s' % (settings.FIREBASE_MONITORING, str(self.command_id)),
+            app.patch('%s/commands/%s' % (settings.FIREBASE_TABLE, str(self.command_id)),
                       {'log': new_progress})
 
     def initialize_firebase(self, progress_doc):
 
-        app = firebase.FirebaseApplication(settings.FIREBASE['NAME'])
+        app = firebase.FirebaseApplication(settings.FIREBASE_MONITORING['NAME'])
 
         results = self._read_write_log(method='get')
         if not results:
@@ -159,5 +159,5 @@ class MonitoredCommand(BaseCommand):
                 new_results[-1]['finished'] = self.get_utc_time
             new_results.append(progress_doc)
 
-        app.patch('%s/commands/%s' % (settings.FIREBASE_MONITORING, str(self.command_id)),
+        app.patch('%s/commands/%s' % (settings.FIREBASE_TABLE, str(self.command_id)),
                   {'log': new_results})
