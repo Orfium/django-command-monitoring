@@ -51,11 +51,23 @@ class MonitoredCommand(BaseCommand):
             default='dev'
         )
 
+        parser.add_argument(
+            "--disable_monitor",
+            action='store_true',
+            dest="disable_monitor",
+            help="Disable monitoring in this command",
+        )
+
         self.command_name = subcommand
 
         return parser
 
     def execute(self, *args, **options):
+
+        if options['disable_monitor']:
+            output = super(MonitoredCommand, self).execute(*args, **options)
+
+            return output
 
         results = [['', False], ]
 

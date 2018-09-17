@@ -45,8 +45,10 @@ from django_command_monitor import monitor
 
 class Command(monitor.MonitoredCommand):
 ...
-
 ```
+
+To disable the command monitoring feature for development runs you can include the input 
+`--disable_monitor`
 
 ## After installation
 Your data in FireBase will look like this:
