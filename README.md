@@ -14,6 +14,7 @@ Currently supports:
 
 #### Package installation
 Use 
+ - `pip install django-command-monitor`
  - `pip install git+https://github.com/siakon89/django-command-monitoring.git`
 
 #### Set up environment
@@ -111,5 +112,4 @@ Finally the `<DATETIME>` format is as follows: YYYY-MM-DDTHH:MM:SS.(float)Z
 
 ## TODO
 - [X] Handle the timeouts on FireBase, with at least 3 times retry
-- [ ] Create tests
 - [ ] Add support for other command classes other than `BaseCommand`
