@@ -69,7 +69,7 @@ Your data in FireBase will look like this:
                                       "exception_type": "<EXCEPTION AS STRING>"
                                 },
                                 {...},
-                                {...}, ...   
+                                ...   
                         ]
                 },
                 "<another command>":{...}
