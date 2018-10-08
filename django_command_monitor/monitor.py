@@ -158,6 +158,9 @@ class MonitoredCommand(BaseCommand):
     def _read_write_firebase(self, method, data, action):
         app = firebase.FirebaseApplication(settings.FIREBASE_MONITORING['NAME'])
 
+        # Make sure the folder we are writing to is monitoring
+        action = 'monitoring/' + action
+
         tries = 3
         results = None
 
