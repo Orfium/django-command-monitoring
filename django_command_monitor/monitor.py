@@ -142,7 +142,7 @@ class MonitoredCommand(BaseCommand):
         """
         results = self._read_write_firebase(method='get',
                                             data=None,
-                                            action='%s/commands/%s/log' % (settings.FIREBASE_TABLE,
+                                            action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
 
         if len(results) > 1:
@@ -153,7 +153,7 @@ class MonitoredCommand(BaseCommand):
 
         self._read_write_firebase(method='patch',
                                   data=new_progress,
-                                  action='%s/commands/%s' % (settings.FIREBASE_TABLE, str(self.command_id)))
+                                  action='%s/commands/%s' % (settings.FIREBASE_MONITORING_KEY, str(self.command_id)))
 
     def _read_write_firebase(self, method, data, action):
         app = firebase.FirebaseApplication(settings.FIREBASE_MONITORING['NAME'])
@@ -187,7 +187,7 @@ class MonitoredCommand(BaseCommand):
 
         results = self._read_write_firebase(method='get',
                                             data=None,
-                                            action='%s/commands/%s/log' % (settings.FIREBASE_TABLE,
+                                            action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
         if not results:
             new_results = [progress_doc]
@@ -200,4 +200,4 @@ class MonitoredCommand(BaseCommand):
 
         self._read_write_firebase(method='patch',
                                   data=new_results,
-                                  action='%s/commands/%s' % (settings.FIREBASE_TABLE, str(self.command_id)))
+                                  action='%s/commands/%s' % (settings.FIREBASE_MONITORING_KEY, str(self.command_id)))
