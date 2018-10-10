@@ -69,6 +69,15 @@ class MonitoredCommand(BaseCommand):
 
             return output
 
+        # If in TESTING environment, do not log
+        try:
+            if settings.TESTING:
+                output = super(MonitoredCommand, self).execute(*args, **options)
+
+                return output
+        except NameError:
+            pass
+
         results = [['', False], ]
 
         def _handle_execute(self, progress_doc, results):
