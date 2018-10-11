@@ -113,7 +113,7 @@ class MonitoredCommand(BaseCommand):
             'finished': self.finished,
             'message': 'Command started',
             'exception_type': None,
-            'params': ', '.join([x.replace('-', '').replace('=', '_') for x in self.arguments_passed])
+            'params': ', '.join([x.replace('-', '') for x in self.arguments_passed])
         }
 
         # Initiate the command log in firebase
