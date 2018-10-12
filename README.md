@@ -15,7 +15,7 @@ Currently supports:
 #### Package installation
 Use 
  - `pip install django-command-monitor`
- - `pip install git+https://github.com/siakon89/django-command-monitoring.git`
+ - `pip install git+https://github.com/orfium/django-command-monitoring.git`
 
 #### Set up environment
 In your django settings file you have to include your FireBase credentials and the FireBase folder that identifies your 
@@ -34,7 +34,7 @@ FIREBASE_MONITORING = {
 
 For your FireBase folder:
 ```python
-FIREBASE_TABLE = 'monitor-myapp-production'
+FIREBASE_MONITORING_KEY = 'monitor-myapp-production'
 ```
 
 #### How to run with django-command-monitoring
@@ -50,6 +50,9 @@ class Command(monitor.MonitoredCommand):
 
 To disable the command monitoring feature for development runs you can include the input 
 `--disable_monitor`
+
+If you want to disable the monitoring in the testing env, you can add a variable in your testing settings:
+`TESTING=True`
 
 ## After installation
 Your data in FireBase will look like this:
