@@ -15,7 +15,7 @@ setup(
     name="django_command_monitor",
 
     # Version number
-    version="0.1.8",
+    version="0.1.9",
 
     # Application author details
     author="Konstantinos Siaterlis",

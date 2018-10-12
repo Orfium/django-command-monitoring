@@ -1,3 +1,5 @@
+import time
+
 from django.core.management.base import BaseCommand
 from datetime import datetime
 import threading
@@ -101,7 +103,7 @@ class MonitoredCommand(BaseCommand):
             results.append([output, failed])
 
         self.command_id = self.command_name + '__' + '__'.join(
-            [x.replace('-', '').replace('=', '_') for x in self.arguments_passed]
+            [x.replace('-', '') for x in self.arguments_passed]
         )
 
         progress_doc = {
@@ -133,7 +135,7 @@ class MonitoredCommand(BaseCommand):
                 progress_doc['latest'] = self.get_utc_time
                 progress_doc['message'] = 'Command running'
                 self._write_log(progress_doc)
-                # time.sleep(10.0)
+                time.sleep(30)
 
         if not results[-1][1]:
             progress_doc['status'] = 'FINISHED'
