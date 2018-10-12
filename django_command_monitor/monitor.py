@@ -103,7 +103,7 @@ class MonitoredCommand(BaseCommand):
             results.append([output, failed])
 
         self.command_id = self.command_name + '__' + '__'.join(
-            [x.replace('-', '') for x in self.arguments_passed]
+            [x.replace('-', '').replace('=', '_') for x in self.arguments_passed]
         )
 
         progress_doc = {
