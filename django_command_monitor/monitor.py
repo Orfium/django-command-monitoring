@@ -155,16 +155,19 @@ class MonitoredCommand(BaseCommand):
                                             data=None,
                                             action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
+        try:
+            if len(results) > 1:
+                new_progress = results[:-1]
+                new_progress.append(progress_doc)
+            else:
+                new_progress = [progress_doc]
 
-        if len(results) > 1:
-            new_progress = results[:-1]
-            new_progress.append(progress_doc)
-        else:
-            new_progress = [progress_doc]
-
-        self._read_write_firebase(method='patch',
-                                  data=new_progress,
-                                  action='%s/commands/%s' % (settings.FIREBASE_MONITORING_KEY, str(self.command_id)))
+            self._read_write_firebase(method='patch',
+                                      data=new_progress,
+                                      action='%s/commands/%s' % (settings.FIREBASE_MONITORING_KEY,
+                                                                 str(self.command_id)))
+        except TypeError:
+            self.initialize_firebase(progress_doc)
 
     def _read_write_firebase(self, method, data, action):
         app = firebase.FirebaseApplication(settings.FIREBASE_MONITORING['NAME'])
