@@ -80,6 +80,23 @@ class MonitoredCommand(BaseCommand):
         except NameError:
             pass
 
+        # Disable monitoring for the entire project
+        try:
+            if not settings.MONITORING:
+                output = super(MonitoredCommand, self).execute(*args, **options)
+
+                return output
+        except NameError:
+            pass
+
+        # Check to see if the interval ping is set
+        interval_ping = 30
+        try:
+            if settings.INTERVAL_PING:
+               interval_ping = settings.INTERVAL_PING
+        except NameError:
+            pass
+
         results = [['', False], ]
 
         def _handle_execute(self, progress_doc, results):
@@ -135,7 +152,7 @@ class MonitoredCommand(BaseCommand):
                 progress_doc['latest'] = self.get_utc_time
                 progress_doc['message'] = 'Command running'
                 self._write_log(progress_doc)
-                time.sleep(30)
+                time.sleep(interval_ping)
 
         if not results[-1][1]:
             progress_doc['status'] = 'FINISHED'

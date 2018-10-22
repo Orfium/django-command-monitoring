@@ -48,11 +48,17 @@ class Command(monitor.MonitoredCommand):
 ...
 ```
 
-To disable the command monitoring feature for development runs you can include the input 
-`--disable_monitor`
+#### Settings variables and command inputs
+- To disable the command monitoring feature for one command for development runs you can include the input 
+`--disable_monitor` as argument in your command
 
-If you want to disable the monitoring in the testing env, you can add a variable in your testing settings:
+- If you want to disable the monitoring in the testing env, you can add a variable in your testing settings:
 `TESTING=True`
+
+- To set the time between each ping set the following variable in settings `INTERVAL_PING=<secs>`, where `<secs>`
+is integer, default is 30 seconds.
+
+- To disable the monitoring for the entire project set the variable in settings `MONITORING=False`
 
 ## After installation
 Your data in FireBase will look like this:
