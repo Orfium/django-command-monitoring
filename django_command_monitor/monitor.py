@@ -172,7 +172,7 @@ class MonitoredCommand(BaseCommand):
                                             action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
         # Make sure to keep the last 100 logs of the command
-        if len(results) > 100:
+        if len(results) >= 100:
             results = results[len(results) - 100:len(results)]
 
         try:
@@ -228,8 +228,8 @@ class MonitoredCommand(BaseCommand):
         else:
             # Make sure to keep the last 100 logs of the command
             new_results = results[::]
-            if len(new_results) > 100:
-                new_results = results[len(results) - 100:len(results)]
+            if len(new_results) >= 100:
+                new_results = results[len(results) - 99:len(results)]  # Get the last 99 items
 
             if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
                 new_results[-1]['status'] = 'SYSTEM_KILL'
