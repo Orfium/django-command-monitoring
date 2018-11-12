@@ -1,9 +1,7 @@
 # Django Command Monitoring
 
 ### Description
-Django Command Monitoring is a tool that logs the progress of django commands. It writes the progress into FireBase
-where you can then read and do whatever you want with the data. Currently it keeps the log of the last 100 iterations
-for each command to avoid overuse of Firebase database.
+Django Command Monitoring is a tool that logs the progress of django commands. It writes the progress into FireBase where you can then read and do whatever you want with the data. Currently it keeps the log of the last 100 iterations for each command to avoid overuse of Firebase database.
 
 Currently supports:
 
@@ -46,7 +44,7 @@ instead of Django's `BaseCommand`
 from django_command_monitor import monitor
 
 class Command(monitor.MonitoredCommand):
-...
+    ...
 ```
 
 #### Settings variables and command inputs
@@ -79,13 +77,13 @@ Your data in FireBase will look like this:
                                       "status": "<STATUS>",
                                       "exception_type": "<EXCEPTION AS STRING>"
                                 },
-                                {...},
-                                ...   
+                                {"...":"..."},
+                                "..."   
                         ]
                 },
-                "<another command>":{...}
-           },
-  },
+                "<another command>":{"...":"..."}
+           }
+  }
 }
 ```
 
