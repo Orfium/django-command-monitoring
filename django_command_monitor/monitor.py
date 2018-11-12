@@ -82,7 +82,7 @@ class MonitoredCommand(BaseCommand):
 
         # Disable monitoring for the entire project
         try:
-            if not settings.MONITORING:
+            if not settings.FIREBASE_MONITORING_RUN:
                 output = super(MonitoredCommand, self).execute(*args, **options)
 
                 return output
@@ -92,8 +92,8 @@ class MonitoredCommand(BaseCommand):
         # Check to see if the interval ping is set
         interval_ping = 30
         try:
-            if settings.INTERVAL_PING:
-               interval_ping = settings.INTERVAL_PING
+            if settings.FIREBASE_MONITORING_INTERVAL_PING:
+               interval_ping = settings.FIREBASE_MONITORING_INTERVAL_PING
         except NameError:
             pass
 
@@ -166,18 +166,21 @@ class MonitoredCommand(BaseCommand):
         """
         Write the log of the command to firebase
         :param progress_doc: dictionary
-        :param method: string, one of post, patch, delete, etc
         """
         results = self._read_write_firebase(method='get',
                                             data=None,
                                             action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
+        # Make sure to keep the last 100 logs of the command
+        if len(results) > 100:
+            results = results[len(results) - 100:len(results)]
+
         try:
             if len(results) > 1:
                 new_progress = results[:-1]
                 new_progress.append(progress_doc)
             else:
-                new_progress = [progress_doc]
+                new_progress = [progress_doc, ]
 
             self._read_write_firebase(method='patch',
                                       data=new_progress,
@@ -221,9 +224,13 @@ class MonitoredCommand(BaseCommand):
                                             action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
         if not results:
-            new_results = [progress_doc]
+            new_results = [progress_doc, ]
         else:
+            # Make sure to keep the last 100 logs of the command
             new_results = results[::]
+            if len(new_results) > 100:
+                new_results = results[len(results) - 100:len(results)]
+
             if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
                 new_results[-1]['status'] = 'SYSTEM_KILL'
                 new_results[-1]['finished'] = self.get_utc_time

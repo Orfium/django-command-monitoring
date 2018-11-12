@@ -2,7 +2,8 @@
 
 ### Description
 Django Command Monitoring is a tool that logs the progress of django commands. It writes the progress into FireBase
-where you can then read and do whatever you want with the data.
+where you can then read and do whatever you want with the data. Currently it keeps the log of the last 100 iterations
+for each command to avoid overuse of Firebase database.
 
 Currently supports:
 
@@ -55,10 +56,10 @@ class Command(monitor.MonitoredCommand):
 - If you want to disable the monitoring in the testing env, you can add a variable in your testing settings:
 `TESTING=True`
 
-- To set the time between each ping set the following variable in settings `INTERVAL_PING=<secs>`, where `<secs>`
+- To set the time between each ping set the following variable in settings `FIREBASE_MONITORING_INTERVAL_PING=<secs>`, where `<secs>`
 is integer, default is 30 seconds.
 
-- To disable the monitoring for the entire project set the variable in settings `MONITORING=False`
+- To disable the monitoring for the entire project set the variable in settings `FIREBASE_MONITORING_RUN=False`
 
 ## After installation
 Your data in FireBase will look like this:
