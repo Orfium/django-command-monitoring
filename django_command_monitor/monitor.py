@@ -196,7 +196,7 @@ class MonitoredCommand(BaseCommand):
         action = 'monitoring/' + action
 
         tries = 3
-        results = None
+        results = []
 
         while tries > 0:
             try:
