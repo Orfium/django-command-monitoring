@@ -227,7 +227,7 @@ class MonitoredCommand(BaseCommand):
             new_results = [progress_doc, ]
         else:
             # Make sure to keep the last 100 logs of the command
-            new_results = results[::]
+            new_results = list(results)
             if len(new_results) >= 100:
                 new_results = results[len(results) - 99:len(results)]  # Get the last 99 items
 
