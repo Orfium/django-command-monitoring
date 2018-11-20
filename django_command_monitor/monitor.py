@@ -65,14 +65,6 @@ class MonitoredCommand(BaseCommand):
         return parser
 
     def execute(self, *args, **options):
-        try:
-            output = self.handle_execute(*args, **options)
-        except:
-            output = super(MonitoredCommand, self).execute(*args, **options)
-
-        return output
-
-    def handle_execute(self, *args, **options):
 
         if options['disable_monitor']:
             output = super(MonitoredCommand, self).execute(*args, **options)
@@ -147,7 +139,7 @@ class MonitoredCommand(BaseCommand):
         self.initialize_firebase(progress_doc)
 
         if options['verbosity'] > 1:
-            print('Monitoring command: %s' % self.command_id)
+            print('MONITORING: Monitoring command: %s' % self.command_id)
 
         # Run the command
         t1 = threading.Thread(target=_handle_execute, args=(self, progress_doc, results))
@@ -218,7 +210,7 @@ class MonitoredCommand(BaseCommand):
 
                 break
             except Exception as e:
-                print('Firebase had an error. Tries left %d' % tries)
+                print('MONITORING: Firebase had an error. Tries left %d' % tries)
                 print(e)
             finally:
                 tries -= 1
@@ -235,14 +227,18 @@ class MonitoredCommand(BaseCommand):
             new_results = [progress_doc, ]
         else:
             # Make sure to keep the last 100 logs of the command
-            new_results = list(results)
-            if len(new_results) >= 100:
-                new_results = results[-99:]  # Get the last 99 items
+            try:
+                new_results = list(results)
+                if len(new_results) >= 100:
+                    new_results = results[-99:]  # Get the last 99 items
 
-            if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
-                new_results[-1]['status'] = 'SYSTEM_KILL'
-                new_results[-1]['finished'] = self.get_utc_time
-            new_results.append(progress_doc)
+                if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
+                    new_results[-1]['status'] = 'SYSTEM_KILL'
+                    new_results[-1]['finished'] = self.get_utc_time
+                new_results.append(progress_doc)
+            except Exception as e:
+                new_results = [progress_doc, ]
+                print('MONITORING: There was an error on keeping the last 100: %s' % str(e))
 
         self._read_write_firebase(method='patch',
                                   data=new_results,
