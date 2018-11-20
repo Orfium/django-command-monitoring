@@ -65,6 +65,14 @@ class MonitoredCommand(BaseCommand):
         return parser
 
     def execute(self, *args, **options):
+        try:
+            output = self.handle_execute(*args, **options)
+        except:
+            output = super(MonitoredCommand, self).execute(*args, **options)
+
+        return output
+
+    def handle_execute(self, *args, **options):
 
         if options['disable_monitor']:
             output = super(MonitoredCommand, self).execute(*args, **options)
