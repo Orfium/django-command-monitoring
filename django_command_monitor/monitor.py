@@ -120,7 +120,7 @@ class MonitoredCommand(BaseCommand):
             results.append([output, failed])
 
         self.command_id = self.command_name + '__' + '__'.join(
-            [x.replace('-', '').replace('=', '_') for x in self.arguments_passed]
+            [x.replace('-', '').replace('=', '_').replace('/', '').replace('\\', '') for x in self.arguments_passed]
         )
 
         progress_doc = {
@@ -229,7 +229,7 @@ class MonitoredCommand(BaseCommand):
             # Make sure to keep the last 100 logs of the command
             new_results = list(results)
             if len(new_results) >= 100:
-                new_results = results[len(results) - 99:len(results)]  # Get the last 99 items
+                new_results = results[-99:]  # Get the last 99 items
 
             if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
                 new_results[-1]['status'] = 'SYSTEM_KILL'
