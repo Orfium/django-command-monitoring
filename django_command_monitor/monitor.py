@@ -115,7 +115,10 @@ class MonitoredCommand(BaseCommand):
                 progress_doc['finished'] = self.get_utc_time
                 progress_doc['message'] = str(e)
                 progress_doc['exeption_type'] = str(sys.exc_info())
-                self._write_log(progress_doc)
+                try:
+                    self._write_log(progress_doc)
+                except Exception as e:
+                    print(e)
 
             results.append([output, failed])
 
@@ -136,7 +139,10 @@ class MonitoredCommand(BaseCommand):
         }
 
         # Initiate the command log in firebase
-        self.initialize_firebase(progress_doc)
+        try:
+            self.initialize_firebase(progress_doc)
+        except Exception as e:
+            print(e)
 
         if options['verbosity'] > 1:
             print('MONITORING: Monitoring command: %s' % self.command_id)
@@ -151,14 +157,21 @@ class MonitoredCommand(BaseCommand):
                 progress_doc['status'] = 'RUNNING'
                 progress_doc['latest'] = self.get_utc_time
                 progress_doc['message'] = 'Command running'
-                self._write_log(progress_doc)
+                try:
+                    self._write_log(progress_doc)
+                except Exception as e:
+                    print(e)
+                    continue
                 time.sleep(interval_ping)
 
         if not results[-1][1]:
             progress_doc['status'] = 'FINISHED'
             progress_doc['finished'] = self.get_utc_time
             progress_doc['message'] = 'Command finished'
-            self._write_log(progress_doc)
+            try:
+                self._write_log(progress_doc)
+            except Exception as e:
+                print(e)
 
         return results[-1][0]
 
