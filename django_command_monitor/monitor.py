@@ -6,6 +6,7 @@ import threading
 import firebase
 from django.conf import settings
 import sys
+import traceback
 
 
 class MonitoredCommand(BaseCommand):
@@ -106,7 +107,7 @@ class MonitoredCommand(BaseCommand):
                 output = super(MonitoredCommand, self).execute(*args, **options)
 
             except Exception as e:
-                print(e)
+                print(traceback.print_exc())
                 failed = True
                 progress_doc['status'] = 'FAILED'
                 progress_doc['finished'] = self.get_utc_time
@@ -115,7 +116,7 @@ class MonitoredCommand(BaseCommand):
                 try:
                     self._write_log(progress_doc)
                 except Exception as e:
-                    print(e)
+                    print(traceback.print_exc())
 
             results.append([output, failed])
 
@@ -139,7 +140,7 @@ class MonitoredCommand(BaseCommand):
         try:
             self.initialize_firebase(progress_doc)
         except Exception as e:
-            print(e)
+            print(traceback.print_exc())
 
         if options['verbosity'] > 1:
             print('MONITORING: Monitoring command: %s' % self.command_id)
@@ -157,7 +158,7 @@ class MonitoredCommand(BaseCommand):
                 try:
                     self._write_log(progress_doc)
                 except Exception as e:
-                    print(e)
+                    print(traceback.print_exc())
                     continue
                 time.sleep(interval_ping)
 
@@ -168,7 +169,7 @@ class MonitoredCommand(BaseCommand):
             try:
                 self._write_log(progress_doc)
             except Exception as e:
-                print(e)
+                print(traceback.print_exc())
 
         return results[-1][0]
 
@@ -182,8 +183,8 @@ class MonitoredCommand(BaseCommand):
                                             action='%s/commands/%s/log' % (settings.FIREBASE_MONITORING_KEY,
                                                                            str(self.command_id)))
         # Make sure to keep the last 100 logs of the command
-        if len(results) >= 100:
-            results = results[len(results) - 100:len(results)]
+        if len(results) >= 70:
+            results = results[len(results) - 70:len(results)]
 
         try:
             if len(results) > 1:
@@ -239,8 +240,8 @@ class MonitoredCommand(BaseCommand):
             # Make sure to keep the last 100 logs of the command
             try:
                 new_results = list(results)
-                if len(new_results) >= 100:
-                    new_results = results[-99:]  # Get the last 99 items
+                if len(new_results) >= 70:
+                    new_results = results[-69:]  # Get the last 99 items
 
                 if (new_results[-1].get('status', '') == 'RUNNING') or (new_results[-1].get('status', '') == 'STARTED'):
                     new_results[-1]['status'] = 'SYSTEM_KILL'
