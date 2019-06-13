@@ -3,10 +3,14 @@ import time
 from django.core.management.base import BaseCommand
 from datetime import datetime
 import threading
-import firebase
 from django.conf import settings
 import sys
 import traceback
+
+if sys.version_info[0] >= 3:
+    from firebase import firebase
+else:
+    import firebase
 
 
 class MonitoredCommand(BaseCommand):
